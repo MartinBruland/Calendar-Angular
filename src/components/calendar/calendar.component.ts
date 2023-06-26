@@ -7,4 +7,19 @@ import { Component } from '@angular/core';
 })
 export class CalendarComponent {
 
+  todaysDate = '';
+  selectedDate = '';
+
+  selectDate = () => {
+
+  };
+
+  selectMonth = () => {
+
+  };
+  
+  selectYear = () => {
+
+  };
+
 }

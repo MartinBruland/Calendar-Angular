@@ -3,7 +3,51 @@
         <p>AGENDA</p>
         <button>+</button>
     </div>
-    <ol class="list">
-        <li class="item">Item A</li>
+    <ol class="list" (click)="onSelectHandler($event)">
+        <li class="item" id={{item.id}} *ngFor="let item of events">{{item.title}}</li>
     </ol>
+
+    <div class="backdrop" *ngIf="editMode && selectedItem">
+        <div class="modal">
+            <div class="modalHeader">
+                <p>UPDATE ITEM</p>
+                <button (click)="setEditMode()">X</button>
+            </div>
+            <div class="modalContent">
+                <section>
+
+                <div>
+                    <label for="title">Title:</label>
+                    <input id="title" value={{selectedItem.title}} (keyup)="onChangeHandler($event)" />
+                </div>
+
+                <div>
+                    <label for="description">Description:</label>
+                    <input id="description" value={{selectedItem.description}} (keyup)="onChangeHandler($event)"/>
+                </div>
+                <div>
+                    <label for="tag">Category:</label>
+                    <input id="tag" value={{selectedItem.tag}} (keyup)="onChangeHandler($event)"/>
+                </div>
+            </section>
+                <section>
+                <div>
+                    <label for="startDate">Start Date:</label>
+                    <input id="startDate" value={{selectedItem.startDate}} (keyup)="onChangeHandler($event)"/>
+                </div>
+                <div>
+                    <label for="endDate">End Date:</label>
+                    <input id="endDate" value={{selectedItem.endDate}} (keyup)="onChangeHandler($event)"/>
+                </div>
+                <div>
+                    <label for="status">Completed:</label>
+                    <input id="status" value={{selectedItem.status}} (keyup)="onChangeHandler($event)"/>
+                </div>
+            </section>
+            </div>
+            <div class="modalFooter">
+                <button (click)="onSaveHandler(selectedItem)">SAVE</button>
+            </div>
+        </div>
+    </div>
 </div>
