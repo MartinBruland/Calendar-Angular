@@ -51,9 +51,8 @@ export class ListComponent {
     this.editMode = !this.editMode;
   };
 
-  onSelectHandler = (event: MouseEvent) => {
-    const key = (event.target as HTMLInputElement).id;
-    const found = this.events.find(item => item.id === key);
+  onSelectHandler = (id: string) => {
+    const found = this.events.find(item => item.id === id);
     if (found) {
       this.selectedItem = found;
       this.editMode = true;
@@ -86,6 +85,13 @@ export class ListComponent {
     };
   };
 
+  onCheckedHandler = (event: Event) => {
+    const key = (event.target as HTMLInputElement).id;
+    const value = (event.target as HTMLInputElement).checked;
+    const index = this.events.findIndex((item => item.id === key));
+    this.events[index].status = value;
+  };
+
   onSaveHandler = (obj: CalendarEvent) => {
     const index = this.events.findIndex((item => item.id === obj.id));
     this.events[index] = obj;
@@ -93,7 +99,17 @@ export class ListComponent {
   };
 
 
-  createHandler = (obj: CalendarEvent) => {
+  createHandler = (event: Event) => {
+    const val = (event.target as HTMLInputElement).value;
+    const obj: CalendarEvent = {
+      id: String(Math.floor(Math.random() * 999999)),
+      title: val,
+      description: "",
+      tag: "",
+      startDate: "",
+      endDate: "",
+      status: false,
+    }
     this.events.push(obj);
   };
 

@@ -1,13 +1,19 @@
 <div class="view">
     <div class="header">
         <p>AGENDA</p>
-        <button>+</button>
     </div>
-    <ol class="list" (click)="onSelectHandler($event)">
-        <li class="item" id={{item.id}} *ngFor="let item of events">{{item.title}}</li>
+    <ol class="list">
+        <li class="item" *ngFor="let item of events">
+            <input type="checkbox" id={{item.id}} (click)="onCheckedHandler($event)" />
+            <label (click)="onSelectHandler(item.id)"> {{item.title}} </label>
+        </li>
+        <li class="add">
+            <label for="add"> + </label>
+            <input type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
+        </li>
     </ol>
 
-    <div class="backdrop" *ngIf="editMode && selectedItem">
+    <div class="backdrop" *ngIf="editMode && selectedItem" (keydown.enter)="onSaveHandler(selectedItem)">
         <div class="modal">
             <div class="modalHeader">
                 <p>UPDATE ITEM</p>
