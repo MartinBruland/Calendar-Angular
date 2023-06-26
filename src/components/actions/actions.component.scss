@@ -1,0 +1,66 @@
+:host {
+    width: 100%;
+}
+
+.view {
+    width: 450px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    padding: 0 0.5rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    & p {
+        font-size: medium;
+        font-weight: bold;
+    }
+}
+
+.content {
+
+    width: 100%;
+    padding: 2rem;
+    overflow-x: scroll;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    border-radius: 8px;
+    background-color: white;
+}
+
+.button {
+    border: none;
+    background-color: none;
+    text-decoration: none;
+    
+    width: 65px;
+    height: 65px;
+    margin-right: 1rem;
+    border-radius: 100%;
+
+    font-size: x-small;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: rgb(192, 228, 255);
+
+}
+
+.button:last-child {
+    margin-right: none;
+}
+
+.button:hover {
+    background-color: rgb(242, 192, 255);
+}
