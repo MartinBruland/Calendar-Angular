@@ -6,6 +6,7 @@
         <li class="item" *ngFor="let item of events">
             <input type="checkbox" id={{item.id}} (click)="onCheckedHandler($event)" />
             <label (click)="onSelectHandler(item.id)"> {{item.title}} </label>
+            <button (click)="deleteHandler(item.id)">x</button>
         </li>
         <li class="add">
             <label for="add"> + </label>

@@ -118,7 +118,7 @@ export class ListComponent {
   };
 
   deleteHandler = (id: string) => {
-    return this.events.filter(item => item.id !== id);
+    this.events = this.events.filter(item => item.id !== id);
   };
 
   filterItemsByTag = (val: string) => {
