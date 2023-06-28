@@ -5,7 +5,7 @@ export type CalendarEvent = {
     description: string;
     tag: string;
 
-    startDate: string;
-    endDate: string;
+    startDate?: Date;
+    endDate?: Date;
     status: boolean;
 }

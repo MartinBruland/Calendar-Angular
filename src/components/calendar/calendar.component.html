@@ -1,20 +1,23 @@
 <div class="view">
 
     <div class="header">
-        <button>PREV</button>
-        <p>YEAR</p>
-        <button>NEXT</button>
+        <button (click)="previousHandler()"> {{previousMonthLabel}} </button>
+        <p> {{currentMonthLabel + " " + currentYear}} </p>
+        <button (click)="nextHandler()"> {{nextMonthLabel}} </button>
     </div>
 
     <div class="content">
-        <div class="weekdays">
-            <p>M</p>
-            <p>T</p>
-            <p>O</p>
-            <p>T</p>
-            <p>F</p>
-            <p>L</p>
-            <p>S</p>
+
+        <div *ngFor="let day of weekdayLabels">
+            <p class="day"> {{day[0]}} </p>
+        </div>
+        
+            <div *ngFor="let date of visibleDates">
+            <p class="date" [ngClass]="{
+                'date-current': date === today.getDate() && currentMonth == today.getMonth() && currentYear === today.getFullYear(),
+                'date-selected': selectedDate && date === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear(),
+                'date-hidden': date === 0,
+            }" (click)="selectHandler(date)">{{ date }}</p>
         </div>
     </div>
 

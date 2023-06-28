@@ -9,7 +9,14 @@ import { CalendarEvent } from '../../types/types'
 export class ListComponent {
 
   // Input: Selected Tag
+  selectedTag = "Work";
+
   // Input: Selected Date
+  selectedDate = new Date();
+  day = this.selectedDate.getDate();
+  month = this.selectedDate.getMonth();
+  year = this.selectedDate.getFullYear();
+
 
   events: CalendarEvent[] = [
     {
@@ -17,8 +24,8 @@ export class ListComponent {
       title: "Event 1",
       description: "Example event",
       tag: "Todos",
-      startDate: "",
-      endDate: "",
+      startDate: new Date("6/1/23"),
+      endDate: new Date("6/7/23"),
       status: false,
     },
     {
@@ -26,8 +33,8 @@ export class ListComponent {
       title: "Event 2",
       description: "Example event",
       tag: "Work",
-      startDate: "",
-      endDate: "",
+      startDate: new Date("6/1/23"),
+      endDate: new Date("6/7/23"),
       status: false,
     },
     {
@@ -35,8 +42,8 @@ export class ListComponent {
       title: "Event 3",
       description: "Example event",
       tag: "Personal",
-      startDate: "",
-      endDate: "",
+      startDate: new Date("6/1/23"),
+      endDate: new Date("6/7/23"),
       status: true,
     }
   ];
@@ -44,6 +51,7 @@ export class ListComponent {
   selectedItem: CalendarEvent | undefined = undefined;
 
   editMode = false;
+
 
 
 
@@ -74,10 +82,8 @@ export class ListComponent {
         this.selectedItem.tag = value;
         return;
       case "startDate":
-        this.selectedItem.startDate = value;
         return;
       case "endDate":
-        this.selectedItem.endDate = value;
         return;
       case "status":
         this.selectedItem.status = value === "true" ? true : false;
@@ -106,8 +112,6 @@ export class ListComponent {
       title: val,
       description: "",
       tag: "",
-      startDate: "",
-      endDate: "",
       status: false,
     }
     this.events.push(obj);
@@ -126,7 +130,7 @@ export class ListComponent {
   };
 
   filterItemsByDate = (val: string) => {
-    return this.events.filter(item => item.startDate === val);
+    return this.events.filter(item => item.startDate === new Date(val));
   };
 
   filterItemsByStatus = (val: boolean) => {
