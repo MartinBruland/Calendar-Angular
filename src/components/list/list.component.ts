@@ -16,6 +16,8 @@ export class ListComponent implements OnChanges, OnInit {
     this.outputEvents.emit(events);
   };
 
+  label = "Events";
+
   events: CalendarEvent[] = [];
 
   selectedItem: CalendarEvent | undefined = undefined;
@@ -58,8 +60,10 @@ export class ListComponent implements OnChanges, OnInit {
         this.selectedItem.tag = value;
         return;
       case "startDate":
+        this.selectedItem.startDate = new Date(value);
         return;
       case "endDate":
+        this.selectedItem.endDate = new Date(value);
         return;
       case "status":
         this.selectedItem.status = value === "true" ? true : false;
@@ -94,7 +98,7 @@ export class ListComponent implements OnChanges, OnInit {
       id: String(Math.floor(Math.random() * 999999)),
       title: val,
       description: "",
-      tag: "Work",
+      tag: "All",
       startDate: selectedDate,
       status: false,
     }
@@ -102,6 +106,8 @@ export class ListComponent implements OnChanges, OnInit {
     updatedEvents.push(obj);
     this.events = updatedEvents;
     this.outputEmitHandler(updatedEvents);
+
+    (event.target as HTMLInputElement).value = ""
   };
 
   readItems = () => {

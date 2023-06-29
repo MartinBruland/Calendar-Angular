@@ -12,7 +12,7 @@ export class ActionsComponent implements OnChanges {
 
   @Output() outputTag: EventEmitter<string> = new EventEmitter<string>();
 
-  label = "FILTERS";
+  label = "Filters";
 
   defaultTags = ["All", "Completed"];
 

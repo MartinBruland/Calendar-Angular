@@ -1,12 +1,14 @@
 :host {
-    width: 100%;
-}
-
-.view {
-    width: 450px;
+    width: 400px;
     display: flex;
     flex-direction: column;
+
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 8px;
+    overflow: hidden;
 }
+
 
 .header {
     width: 100%;
@@ -15,17 +17,19 @@
 
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
+
+    background-color: #2a3746;
 
     & p {
         font-size: medium;
         font-weight: bold;
+        color: #ffffff;
     }
 }
 
 .content {
-
     width: 100%;
     padding: 2rem;
     overflow-x: scroll;
@@ -34,33 +38,27 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    gap: 1rem;
 }
 
 .button {
     border: none;
     background-color: none;
     text-decoration: none;
-
-    width: 65px;
-    height: 65px;
-    margin-right: 1rem;
-    border-radius: 100%;
-
     font-size: x-small;
     font-weight: bold;
     cursor: pointer;
-    background-color: rgb(255, 245, 219);
+
+    height: 65px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: #f5f6f8;
+    color: #000000;
+
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
-.button:last-child {
-    margin-right: none;
-}
-
 .button-selected {
-    background-color: wheat;
+    background-color: #2a3746;
+    color: #ffffff;
 }

@@ -1,60 +1,59 @@
-<div class="view">
-    <div class="header">
-        <p>AGENDA</p>
-    </div>
-    <ol class="list">
-        <li class="item" *ngFor="let item of readItems()">
-            <input type="checkbox" id={{item.id}} (click)="onCheckedHandler($event)" />
-            <label (click)="onSelectHandler(item.id)"> {{item.title}} </label>
-        </li>
-        <li class="add">
-            <label for="add"> + </label>
-            <input type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
-        </li>
-    </ol>
 
-    <div class="backdrop" *ngIf="editMode && selectedItem" (keydown.enter)="onSaveHandler(selectedItem)">
-        <div class="modal">
-            <div class="modalHeader">
-                <p>UPDATE ITEM</p>
-                <button (click)="setEditMode()">X</button>
-            </div>
-            <div class="modalContent">
-                <section>
+<div class="header">
+    <p>{{label}}</p>
+</div>
+<ol class="list">
+    <li class="item" *ngFor="let item of readItems()">
+        <input type="checkbox" id={{item.id}} (click)="onCheckedHandler($event)" />
+        <label (click)="onSelectHandler(item.id)"> {{item.title}} </label>
+    </li>
+    <li class="add">
+        <label for="add"> + </label>
+        <input type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
+    </li>
+</ol>
 
-                <div>
-                    <label for="title">Title:</label>
-                    <input id="title" value={{selectedItem.title}} (keyup)="onChangeHandler($event)" />
-                </div>
+<div class="backdrop" *ngIf="editMode && selectedItem" (document:keydown.enter)="onSaveHandler(selectedItem)" (document:keydown.escape)="setEditMode()">
+    <div class="modal">
+        <div class="modalHeader">
+            <p>UPDATE ITEM</p>
+            <button (click)="setEditMode()">X</button>
+        </div>
+        <div class="modalContent">
+            <section>
 
-                <div>
-                    <label for="description">Description:</label>
-                    <input id="description" value={{selectedItem.description}} (keyup)="onChangeHandler($event)"/>
-                </div>
-                <div>
-                    <label for="tag">Category:</label>
-                    <input id="tag" value={{selectedItem.tag}} (keyup)="onChangeHandler($event)"/>
-                </div>
-            </section>
-                <section>
-                <div>
-                    <label for="startDate">Start Date:</label>
-                    <input id="startDate" value={{selectedItem.startDate}} (keyup)="onChangeHandler($event)"/>
-                </div>
-                <div>
-                    <label for="endDate">End Date:</label>
-                    <input id="endDate" value={{selectedItem.endDate}} (keyup)="onChangeHandler($event)"/>
-                </div>
-                <div>
-                    <label for="status">Completed:</label>
-                    <input id="status" value={{selectedItem.status}} (keyup)="onChangeHandler($event)"/>
-                </div>
-            </section>
+            <div>
+                <label for="title">Title:</label>
+                <input id="title" value={{selectedItem.title}} (keyup)="onChangeHandler($event)" />
             </div>
-            <div class="modalFooter">
-                <button (click)="deleteHandler(selectedItem.id)">DELETE</button>
-                <button (click)="onSaveHandler(selectedItem)">SAVE</button>
+
+            <div>
+                <label for="description">Description:</label>
+                <input id="description" value={{selectedItem.description}} (keyup)="onChangeHandler($event)"/>
             </div>
+            <div>
+                <label for="tag">Category:</label>
+                <input id="tag" value={{selectedItem.tag}} (keyup)="onChangeHandler($event)"/>
+            </div>
+        </section>
+            <section>
+            <div>
+                <label for="startDate">Start Date:</label>
+                <input id="startDate" value={{selectedItem.startDate}} (keyup)="onChangeHandler($event)"/>
+            </div>
+            <div>
+                <label for="endDate">End Date:</label>
+                <input id="endDate" value={{selectedItem.endDate}} (keyup)="onChangeHandler($event)"/>
+            </div>
+            <div>
+                <label for="status">Completed:</label>
+                <input id="status" value={{selectedItem.status}} (keyup)="onChangeHandler($event)"/>
+            </div>
+        </section>
+        </div>
+        <div class="modalFooter">
+            <button (click)="deleteHandler(selectedItem.id)">DELETE</button>
+            <button (click)="onSaveHandler(selectedItem)">SAVE</button>
         </div>
     </div>
 </div>
