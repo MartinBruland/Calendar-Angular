@@ -12,12 +12,13 @@
             <p class="day"> {{day[0]}} </p>
         </div>
         
-            <div *ngFor="let date of visibleDates">
+        <div class="date-container" *ngFor="let date of visibleDates">
             <p class="date" [ngClass]="{
                 'date-current': date === today.getDate() && currentMonth == today.getMonth() && currentYear === today.getFullYear(),
                 'date-selected': selectedDate && date === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear(),
                 'date-hidden': date === 0,
-            }" (click)="selectHandler(date)">{{ date }}</p>
+            }" (click)="selectHandler(date)"> {{ date }} </p>
+            <p class="date-hasContent" *ngIf="hasContent(date)"> . . . </p>
         </div>
     </div>
 

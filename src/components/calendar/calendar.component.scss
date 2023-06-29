@@ -7,6 +7,7 @@
 .view {
     width: 400px;
     height: 350px;
+
 }
 
 .header {
@@ -48,6 +49,8 @@
     align-items: center;
     flex-wrap: wrap;
 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
     & div {
         width: calc(100%/7);
         aspect-ratio: 1;
@@ -60,25 +63,37 @@
     & .day {
         text-transform: uppercase;
         font-weight: bold;
+        user-select: none;
+    }
+
+    & .date-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & .date-hasContent {
+        color: black;
     }
 
     & .date {
         cursor: pointer;
-
+        user-select: none;
     }
 
     & .date-current {
         border-radius: 50%;
-        background-color: rebeccapurple;
-        color: white;
+        background-color: rgb(255, 245, 219);
         padding: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     }
 
     & .date-selected {
         border-radius: 50%;
-        background-color: green;
-        color: white;
+        background-color: wheat;
         padding: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     }
 
     & .date-hidden {

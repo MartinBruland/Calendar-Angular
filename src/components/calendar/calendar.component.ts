@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CalendarEvent } from 'src/types/types';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnChanges, OnInit {
+  
+  @Input() inputEvents: CalendarEvent[] | undefined;
+  @Output() outputDate: EventEmitter<Date> = new EventEmitter<Date>();
 
   today = new Date();
   
@@ -27,6 +31,16 @@ export class CalendarComponent implements OnInit {
 
   selectedDate: Date | undefined = undefined;
 
+
+  ngOnChanges(changes: SimpleChanges): void {
+    for (const propName in changes) {
+      if (propName === "inputEvents") {
+        const chng = changes[propName];
+        const updatedEvents: CalendarEvent[] = chng.currentValue;
+        //this.availableTags = updatedEvents.map(item => item.tag);
+      }
+    }
+  };
 
   ngOnInit(): void {
     this.updateUI()
@@ -51,8 +65,20 @@ export class CalendarComponent implements OnInit {
     this.updateUI();
   };
 
+  outputEmitHandler = (date: Date | undefined) => {
+    this.outputDate.emit(date);
+  };
+
   selectHandler = (val: number) => {
-    this.selectedDate = new Date(this.currentYear, this.currentMonth, val);
+    const date = new Date(this.currentYear, this.currentMonth, val);
+
+    const isEqual = 
+    (this.selectedDate?.getDate() === date.getDate()) && 
+    (this.selectedDate?.getMonth() === date.getMonth()) && 
+    (this.selectedDate?.getFullYear() === date.getFullYear());
+
+    this.selectedDate = isEqual ? undefined : date;
+    this.outputEmitHandler(this.selectedDate)   
   };
 
   getPreviousMonth = () => {
@@ -74,6 +100,16 @@ export class CalendarComponent implements OnInit {
     const firstDayList = [...Array(firstWeekDayMonday - 1).keys()].map(val => 0);
     const listOfDays = [...Array(numberOfDays + 1).keys()].filter(val => val !== 0);
     return [...firstDayList, ...listOfDays]
+  };
+
+  hasContent = (date: number): boolean => {
+    const found = this.inputEvents?.find(obj => 
+      obj.startDate?.getDate() === date && 
+      obj.startDate.getMonth() === this.currentMonth && 
+      obj.startDate.getFullYear() === this.currentYear
+    );
+    if (found) return true;
+    return false;
   };
 
 }

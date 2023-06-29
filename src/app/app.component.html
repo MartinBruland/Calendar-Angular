@@ -10,11 +10,11 @@
 
   <main class="content">
     <section>
-      <app-calendar />
-      <app-actions />
+      <app-calendar [inputEvents]="events" (outputDate)="receiveSelectedDate($event)" />
+      <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
     </section>
     <section>
-      <app-list />
+      <app-list [inputDate]="selectedDate" [inputTag]="selectedTag" (outputEvents)="receiveCalendarEvents($event)" />
     </section>
   </main>
 
