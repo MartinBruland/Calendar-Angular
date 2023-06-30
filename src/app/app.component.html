@@ -1,23 +1,19 @@
-  <div class="app" [ngClass]="{'darkmode': darkmode}">
+<div class="app" [ngClass]="{'darkmode': darkmode}">
   <header>
     <h1> {{labelTitle}} </h1>
     <button (click)="setDarkMode()"> {{labelDarkMode}} </button>
   </header>
 
   <main>
-    <section>
       <div class="placeholder-1" >
         <app-calendar [inputEvents]="events" (outputDate)="receiveSelectedDate($event)" />
       </div>
       <div class="placeholder-2" >
-        <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
-      </div>      
-    </section>
-    <section>
-      <div class="placeholder-3" >
         <app-list [inputDate]="selectedDate" [inputTag]="selectedTag" (outputEvents)="receiveCalendarEvents($event)" />
+      </div>      
+      <div class="placeholder-3" >
+        <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
       </div>
-    </section>
   </main>
 
   <footer>
