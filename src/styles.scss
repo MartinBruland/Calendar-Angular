@@ -95,7 +95,14 @@ button {
 input {
     border: none;
     appearance: none;
+    -webkit-appearance: none;
     outline: none;
     cursor: text;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px var(--midground-color) inset !important;
 }
 

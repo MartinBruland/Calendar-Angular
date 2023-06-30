@@ -1,0 +1,51 @@
+<div class="view">
+    
+  <section>
+    <div class="calendarIcon">
+      <div class="header"></div>
+      <div class="content">
+
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+          <div class="square"></div>
+
+      </div>
+    </div>
+
+    
+  </section>
+
+  <section>
+    <h1> Sign in with email </h1>
+    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+        <input
+          id="email"
+          formControlName="email"
+          class="inputField"
+          type="email"
+          placeholder="Email"
+        />
+        <button type="submit" [disabled]="loading">
+          {{ '>' }}
+        </button>
+    </form>
+    <div class="message-container">
+      <p *ngIf="showMessage">{{message}}</p>
+    </div>
+  </section>
+
+  </div>

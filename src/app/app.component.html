@@ -1,22 +1,36 @@
 <div class="app" [ngClass]="{'darkmode': darkmode}">
   <header>
     <h1> {{labelTitle}} </h1>
-    <button (click)="setDarkMode()"> {{labelDarkMode}} </button>
+    <div>
+      <button (click)="setDarkMode()"> {{labelDarkMode}} </button>
+      <button (click)="setDisplaySettings()" *ngIf="session"> Account </button>
+      <button (click)="signOut()" *ngIf="session">Sign Out</button>
+    </div>
   </header>
 
   <main>
-      <div class="placeholder-1" >
-        <app-calendar [inputEvents]="events" (outputDate)="receiveSelectedDate($event)" />
-      </div>
-      <div class="placeholder-2" >
-        <app-list [inputDate]="selectedDate" [inputTag]="selectedTag" (outputEvents)="receiveCalendarEvents($event)" />
-      </div>      
-      <div class="placeholder-3" >
-        <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
-      </div>
+
+    <app-login class="loginView"  *ngIf="!session" />
+
+    <div class="mainView" *ngIf="session && !displaySettings">
+
+        <div class="placeholder-1" >
+          <app-calendar [inputEvents]="events" (outputDate)="receiveSelectedDate($event)" />
+        </div>
+        <div class="placeholder-2" >
+          <app-list [inputDate]="selectedDate" [inputTag]="selectedTag" (outputEvents)="receiveCalendarEvents($event)" />
+        </div>      
+        <div class="placeholder-3" >
+          <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
+        </div>
+
+    </div>
+
+    <app-settings class="settingsView" *ngIf="session && displaySettings" [session]="session" />
+
   </main>
 
+
   <footer>
-    <p> {{labelCopyright}} </p>
   </footer>
 </div>

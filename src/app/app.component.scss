@@ -20,24 +20,43 @@ header {
     background-color: var(--foreground-color);
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
+    & div {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 2rem;
 
-    & button {
-        color: var(--text-color-black);
-        background-color: var(--background-color);
-        height: 70%;
-        width: 80px;
-        border-radius: 8px;
+        width: auto;
+        height: 100%;
+
+        & button {
+            color: var(--text-color-black);
+            background-color: var(--background-color);
+            height: 70%;
+            width: 80px;
+            border-radius: 8px;
+        }
     }
+
 }
 
 main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    width: 90%;
+}
+
+.mainView {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    width: 90%;
     gap: 4rem;
+    width: 100%;
 
     & .placeholder-1 {
         width: 100%;
@@ -49,6 +68,33 @@ main {
     & .placeholder-3 {
         width: 100%;
     }
+}
+
+.settingsView {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 60%;
+    height: 70vh;
+
+    background-color: var(--midground-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); 
+}
+
+.loginView {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--midground-color);
+    width: 400px;
+    height: 450px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); 
 }
 
 footer {
@@ -90,15 +136,17 @@ footer {
     main {
         width: 80%;
         justify-content: space-between;
+    }
 
-        & .placeholder-1 {
-            width: 40%;
-        }
-        & .placeholder-2 {
-            width: 50%;
-        }
-        & .placeholder-3 {
-            width: 40%;
-        }
+    .mainView {
+    & .placeholder-1 {
+        width: 40%;
+    }
+    & .placeholder-2 {
+        width: 50%;
+    }
+    & .placeholder-3 {
+        width: 40%;
+    }
     }
 }

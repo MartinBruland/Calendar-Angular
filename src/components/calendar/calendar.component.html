@@ -7,7 +7,7 @@
 <div class="content">
 
     <div class="weekday-container" *ngFor="let day of weekdayLabels">
-        <h4> {{day[0]}} </h4>
+        <h4> {{day.substring(0, 3)}} </h4>
     </div>
     
     <div class="date-container" *ngFor="let date of visibleDates">

@@ -1,0 +1,20 @@
+<div>
+    <img
+      *ngIf="_avatarUrl"
+      [src]="_avatarUrl"
+      alt="Avatar"
+    />
+  </div>
+  <div *ngIf="!_avatarUrl"></div>
+  <div>
+    <label for="single">
+      {{ uploading ? 'Uploading ...' : 'Upload' }}
+    </label>
+    <input
+      type="file"
+      id="single"
+      accept="image/*"
+      (change)="uploadAvatar($event)"
+      [disabled]="uploading"
+    />
+  </div>
