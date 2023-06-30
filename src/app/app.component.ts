@@ -8,15 +8,20 @@ import { CalendarEvent } from 'src/types/types';
 })
 export class AppComponent {
   
-  title = 'Calendar';
+  darkmode = false;
 
-  owner = '@ Martin Bruland, 2023';
+  labelTitle = 'Calendar';
+  labelCopyright = '@ Martin Bruland, 2023';
+  labelDarkMode = this.darkmode ? "Light" : "Dark";
+
 
   selectedDate: Date | undefined = undefined;
 
   selectedTag: string | undefined = undefined;
 
   events: CalendarEvent[] = [];
+
+  
   
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -31,6 +36,11 @@ export class AppComponent {
   receiveCalendarEvents(events: CalendarEvent[]) {
     this.events = events;
     this.cdr.detectChanges();
+  };
+
+  setDarkMode = () => {
+    this.darkmode = !this.darkmode;
+    this.labelDarkMode = this.darkmode ? "Light" : "Dark";
   };
   
 }

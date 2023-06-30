@@ -12,7 +12,7 @@ export class ActionsComponent implements OnChanges {
 
   @Output() outputTag: EventEmitter<string> = new EventEmitter<string>();
 
-  label = "Filters";
+  labelTitle = "Filters";
 
   defaultTags = ["All", "Completed"];
 
@@ -36,7 +36,7 @@ export class ActionsComponent implements OnChanges {
     this.outputTag.emit(val);
   };
 
-  selectHandler = (val: string) => {
+  onSelectHandler = (val: string) => {
     this.selectedTag = val;
     this.outputEmitHandler(val);
   };

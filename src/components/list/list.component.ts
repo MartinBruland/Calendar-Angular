@@ -16,7 +16,16 @@ export class ListComponent implements OnChanges, OnInit {
     this.outputEvents.emit(events);
   };
 
-  label = "Events";
+  labelTitle = "Events";
+  labelUpdate = "Update Item";
+  labelSave = "Save";
+  labelDelete = "Delete";
+  labelAdd = "+";
+  labelName = "Title: ";
+  labelDescription = "Description: ";
+  labelTag = "Category: ";
+  labelStartDate = "Start Date: ";
+  labelEndDate = "End Date: ";
 
   events: CalendarEvent[] = [];
 
@@ -45,7 +54,7 @@ export class ListComponent implements OnChanges, OnInit {
     };
   };
 
-  onChangeHandler = (event: KeyboardEvent) => {
+  onChangeHandler = (event: Event) => {
     if (!this.selectedItem) return;
     const key = (event.target as HTMLInputElement).id;
     const value = (event.target as HTMLInputElement).value;
@@ -116,9 +125,7 @@ export class ListComponent implements OnChanges, OnInit {
 
     let filteredEvents: CalendarEvent[] = [];
 
-    filteredEvents = originalEvents;
-
-    if (this.inputTag === "All") {
+    if (!this.inputTag || this.inputTag === "All") {
       filteredEvents = originalEvents;
     };
     
@@ -164,8 +171,6 @@ export class ListComponent implements OnChanges, OnInit {
     return [...data].filter(item => item.status === val);
   };
 
-
-
   reloadCalendarEvents = () => {
     return [
       {
@@ -196,6 +201,14 @@ export class ListComponent implements OnChanges, OnInit {
         status: true,
       }
     ] as CalendarEvent[]
+  };
+
+  formatDate = (date: Date | undefined) => {
+    if (!date) return;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
 }

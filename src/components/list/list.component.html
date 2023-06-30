@@ -1,59 +1,54 @@
 
 <div class="header">
-    <p>{{label}}</p>
+    <h2> {{labelTitle}} </h2>
 </div>
-<ol class="list">
-    <li class="item" *ngFor="let item of readItems()">
-        <input type="checkbox" id={{item.id}} (click)="onCheckedHandler($event)" />
-        <label (click)="onSelectHandler(item.id)"> {{item.title}} </label>
+
+<ol>
+    <li *ngFor="let item of readItems()">
+        <input class="input-checkbox" type="checkbox" [checked]="item.status" id={{item.id}} (click)="onCheckedHandler($event)" />
+        <label class="label-listItem" (click)="onSelectHandler(item.id)"> {{item.title}} </label>
     </li>
     <li class="add">
-        <label for="add"> + </label>
-        <input type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
+        <label class="label-add" for="add"> + </label>
+        <input class="input-text" type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
     </li>
 </ol>
 
 <div class="backdrop" *ngIf="editMode && selectedItem" (document:keydown.enter)="onSaveHandler(selectedItem)" (document:keydown.escape)="setEditMode()">
     <div class="modal">
-        <div class="modalHeader">
-            <p>UPDATE ITEM</p>
+
+        <div class="modal-header">
+            <h3> {{labelUpdate}} </h3>
             <button (click)="setEditMode()">X</button>
         </div>
-        <div class="modalContent">
-            <section>
 
+        <div class="modal-main">
             <div>
-                <label for="title">Title:</label>
+                <label for="title"> {{labelName}} </label>
                 <input id="title" value={{selectedItem.title}} (keyup)="onChangeHandler($event)" />
             </div>
-
             <div>
-                <label for="description">Description:</label>
+                <label for="description"> {{labelDescription}} </label>
                 <input id="description" value={{selectedItem.description}} (keyup)="onChangeHandler($event)"/>
             </div>
             <div>
-                <label for="tag">Category:</label>
+                <label for="tag"> {{labelTag}} </label>
                 <input id="tag" value={{selectedItem.tag}} (keyup)="onChangeHandler($event)"/>
             </div>
-        </section>
-            <section>
             <div>
-                <label for="startDate">Start Date:</label>
-                <input id="startDate" value={{selectedItem.startDate}} (keyup)="onChangeHandler($event)"/>
+                <label for="startDate"> {{labelStartDate}} </label>
+                <input id="startDate" value={{formatDate(selectedItem.startDate)}} (change)="onChangeHandler($event)" type="date"/>
             </div>
             <div>
-                <label for="endDate">End Date:</label>
-                <input id="endDate" value={{selectedItem.endDate}} (keyup)="onChangeHandler($event)"/>
+                <label for="endDate"> {{labelEndDate}} </label>
+                <input id="endDate" value={{formatDate(selectedItem.endDate)}} (change)="onChangeHandler($event)" type="date"/>
             </div>
-            <div>
-                <label for="status">Completed:</label>
-                <input id="status" value={{selectedItem.status}} (keyup)="onChangeHandler($event)"/>
-            </div>
-        </section>
         </div>
-        <div class="modalFooter">
-            <button (click)="deleteHandler(selectedItem.id)">DELETE</button>
-            <button (click)="onSaveHandler(selectedItem)">SAVE</button>
+
+        <div class="modal-footer">
+            <button (click)="deleteHandler(selectedItem.id)"> {{labelDelete}} </button>
+            <button (click)="onSaveHandler(selectedItem)"> {{labelSave}} </button>
         </div>
+        
     </div>
 </div>

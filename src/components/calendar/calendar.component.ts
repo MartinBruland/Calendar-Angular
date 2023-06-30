@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import { CalendarEvent } from 'src/types/types';
 
 @Component({
@@ -6,7 +6,7 @@ import { CalendarEvent } from 'src/types/types';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnChanges, OnInit {
+export class CalendarComponent implements OnInit {
   
   @Input() inputEvents: CalendarEvent[] | undefined;
   @Output() outputDate: EventEmitter<Date> = new EventEmitter<Date>();
@@ -32,16 +32,11 @@ export class CalendarComponent implements OnChanges, OnInit {
   selectedDate: Date | undefined = undefined;
 
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const propName in changes) {
-      if (propName === "inputEvents") {
-        const chng = changes[propName];
-        const updatedEvents: CalendarEvent[] = chng.currentValue;
-        //this.availableTags = updatedEvents.map(item => item.tag);
-      }
-    }
-  };
 
+  outputEmitHandler = (date: Date | undefined) => {
+    this.outputDate.emit(date);
+  };
+  
   ngOnInit(): void {
     this.updateUI()
   };
@@ -53,23 +48,19 @@ export class CalendarComponent implements OnChanges, OnInit {
     this.visibleDates = this.getVisibleDates();
   };
 
-  previousHandler = () => {
+  onPreviousMonthHandler = () => {
     this.currentMonth = this.getPreviousMonth().previousMonth;
     this.currentYear = this.getPreviousMonth().previousYear;
     this.updateUI();
   };
 
-  nextHandler = () => {
+  onNextMonthHandler = () => {
     this.currentMonth = this.getNextMonth().nextMonth;
     this.currentYear = this.getNextMonth().nextYear;
     this.updateUI();
   };
 
-  outputEmitHandler = (date: Date | undefined) => {
-    this.outputDate.emit(date);
-  };
-
-  selectHandler = (val: number) => {
+  onSelectDateHandler = (val: number) => {
     const date = new Date(this.currentYear, this.currentMonth, val);
 
     const isEqual = 
@@ -102,7 +93,7 @@ export class CalendarComponent implements OnChanges, OnInit {
     return [...firstDayList, ...listOfDays]
   };
 
-  hasContent = (date: number): boolean => {
+  dateHasContent = (date: number): boolean => {
     const found = this.inputEvents?.find(obj => 
       obj.startDate?.getDate() === date && 
       obj.startDate.getMonth() === this.currentMonth && 
@@ -110,6 +101,29 @@ export class CalendarComponent implements OnChanges, OnInit {
     );
     if (found) return true;
     return false;
+  };
+
+  isDateCurrent(date: number): boolean {
+    return (
+      date === this.today.getDate() && 
+      this.currentMonth == this.today.getMonth() && 
+      this.currentYear === this.today.getFullYear()
+    )
+  };
+
+  isDateSelected(date: number): boolean {
+    if (!this.selectedDate) return false;
+    return (
+      date === this.selectedDate.getDate() && 
+      this.currentMonth === this.selectedDate.getMonth() && 
+      this.currentYear === this.selectedDate.getFullYear()
+    )
+  };
+
+  isDateHidden(date: number): boolean {
+    return (
+      date === 0
+    )
   };
 
 }
