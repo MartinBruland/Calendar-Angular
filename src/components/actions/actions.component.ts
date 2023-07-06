@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { CalendarEvent } from 'src/types/types';
+import { EventValidated } from 'src/types/types'
 
 @Component({
   selector: 'app-actions',
@@ -8,12 +8,15 @@ import { CalendarEvent } from 'src/types/types';
 })
 export class ActionsComponent implements OnChanges {
 
-  @Input() inputEvents: CalendarEvent[] | undefined;
+  labelTitle = "Filters";
+
+
+
+  @Input() inputEvents: EventValidated[] | undefined;
 
   @Output() outputTag: EventEmitter<string> = new EventEmitter<string>();
 
-  labelTitle = "Filters";
-
+  
   defaultTags = ["All", "Completed"];
 
   availableTags = this.defaultTags;
@@ -25,8 +28,10 @@ export class ActionsComponent implements OnChanges {
     for (const propName in changes) {
       if (propName === "inputEvents") {
         const chng = changes[propName];
-        const updatedEvents: CalendarEvent[] = chng.currentValue;       
+        const updatedEvents: EventValidated[] = chng.currentValue;       
         const tags = [...this.defaultTags, ...updatedEvents.map(event => event.tag)]
+        .filter(tag => tag !== undefined) // Filter out null values
+        .map(tag => tag as string); // Type assertion to convert remaining values to strings      
         this.availableTags = [...new Set(tags)];
       };
     }

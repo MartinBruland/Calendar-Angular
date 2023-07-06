@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
-import { CalendarEvent } from 'src/types/types';
+import { EventValidated } from 'src/types/types'
 
 @Component({
   selector: 'app-calendar',
@@ -8,7 +8,7 @@ import { CalendarEvent } from 'src/types/types';
 })
 export class CalendarComponent implements OnInit {
   
-  @Input() inputEvents: CalendarEvent[] | undefined;
+  @Input() inputEvents: EventValidated[] | undefined;
   @Output() outputDate: EventEmitter<Date> = new EventEmitter<Date>();
 
   today = new Date();
@@ -94,12 +94,18 @@ export class CalendarComponent implements OnInit {
   };
 
   dateHasContent = (date: number): boolean => {
-    const found = this.inputEvents?.find(obj => 
-      obj.startDate?.getDate() === date && 
-      obj.startDate.getMonth() === this.currentMonth && 
-      obj.startDate.getFullYear() === this.currentYear
+    
+    if (!this.inputEvents) return false;
+
+    const found = this.inputEvents.find(obj =>
+      obj.date_start &&
+      obj.date_start.getDate() === date && 
+      obj.date_start.getMonth() === this.currentMonth && 
+      obj.date_start.getFullYear() === this.currentYear
     );
+
     if (found) return true;
+
     return false;
   };
 

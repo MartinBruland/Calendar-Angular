@@ -1,25 +1,50 @@
   <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()">
-    <h1>Account</h1>
-    <!-- <app-avatar [avatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"> </app-avatar> -->
 
-    <section>
+    <h1> {{'Account'}} </h1>
+
+    <section class="avatar">
+
+    <div>
+      <img
+        *ngIf="_avatarUrl"
+        [src]="_avatarUrl"
+        alt="Avatar"
+      />
+    </div>
+    <label for="file-upload">
+      <input 
+      type="file"
+      accept="image/*"
+      id="file-upload"
+      (change)="uploadAvatar($event)"
+      hidden
+      />
+      U
+    </label>
+
+    </section>
+    
+    <section class="information">
     <div>
       <label for="email">Email</label>
       <input id="email" type="text" [value]="session.user.email" disabled />
     </div>
     <div>
-      <label for="username">Name</label>
-      <input formControlName="username" id="username" type="text" />
+      <label for="first_name">First Name</label>
+      <input formControlName="first_name" id="first_name" type="text" />
     </div>
     <div>
-      <label for="website">Website</label>
-      <input formControlName="website" id="website" type="url" />
+      <label for="last_name">Last Name</label>
+      <input formControlName="last_name" id="last_name" type="url" />
     </div>
   </section>
 
-    <section>
-      <button type="submit" [disabled]="loading">
-        {{ loading ? 'Loading ...' : 'Save' }}
+    <section class="actions">
+      <button type="submit">
+        {{ 'Delete Account' }}
+      </button>
+      <button type="submit">
+        {{ 'Save' }}
       </button>
     </section>
     

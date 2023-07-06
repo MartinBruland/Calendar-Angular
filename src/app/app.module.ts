@@ -7,7 +7,6 @@ import { ListComponent } from '../components/list/list.component';
 import { ActionsComponent } from '../components/actions/actions.component';
 import { LoginComponent } from '../components/login/login.component';
 import { SettingsComponent } from '../components/settings/settings.component';
-import { AvatarComponent } from '../components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +16,6 @@ import { AvatarComponent } from '../components/avatar/avatar.component';
     ActionsComponent,
     LoginComponent,
     SettingsComponent,
-    AvatarComponent
   ],
   imports: [
     BrowserModule,

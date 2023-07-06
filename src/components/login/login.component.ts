@@ -9,7 +9,6 @@ import { SupabaseService } from '../../app/supabase.service'
 })
 export class LoginComponent {
 
-  loading = false;
   showMessage = false;
   message = "";
 
@@ -27,7 +26,6 @@ export class LoginComponent {
   async onSubmit(): Promise<void> {
     try {
       this.message = "Check your email for the login link!";
-      this.loading = true
       this.showMessage = true
 
       const email = this.signInForm.value.email as string
@@ -41,7 +39,6 @@ export class LoginComponent {
       }
     } finally {
       this.signInForm.reset()
-      this.loading = false
     }
   };
 

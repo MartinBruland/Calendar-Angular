@@ -4,9 +4,9 @@
 </div>
 
 <ol>
-    <li *ngFor="let item of readItems()">
+    <li *ngFor="let item of getFilteredItems()">
         <input class="input-checkbox" type="checkbox" [checked]="item.status" id={{item.id}} (click)="onCheckedHandler($event)" />
-        <label class="label-listItem" (click)="onSelectHandler(item.id)"> {{item.title}} </label>
+        <label class="label-listItem" (click)="onSelectHandler(item.id!)"> {{item.title}} </label>
     </li>
     <li class="add">
         <label class="label-add" for="add"> + </label>
@@ -14,12 +14,12 @@
     </li>
 </ol>
 
-<div class="backdrop" *ngIf="editMode && selectedItem" (document:keydown.enter)="onSaveHandler(selectedItem)" (document:keydown.escape)="setEditMode()">
+<div class="backdrop" *ngIf="isEditViewVisible && selectedItem" (document:keydown.enter)="onSaveHandler(selectedItem)" (document:keydown.escape)="setEditView()">
     <div class="modal">
 
         <div class="modal-header">
             <h3> {{labelUpdate}} </h3>
-            <button (click)="setEditMode()">X</button>
+            <button (click)="setEditView()">X</button>
         </div>
 
         <div class="modal-main">
@@ -37,16 +37,16 @@
             </div>
             <div>
                 <label for="startDate"> {{labelStartDate}} </label>
-                <input id="startDate" value={{formatDate(selectedItem.startDate)}} (change)="onChangeHandler($event)" type="date"/>
+                <input id="startDate" value={{formatDate(selectedItem.date_start)}} (change)="onChangeHandler($event)" type="date"/>
             </div>
             <div>
                 <label for="endDate"> {{labelEndDate}} </label>
-                <input id="endDate" value={{formatDate(selectedItem.endDate)}} (change)="onChangeHandler($event)" type="date"/>
+                <input id="endDate" value={{formatDate(selectedItem.date_end)}} (change)="onChangeHandler($event)" type="date"/>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button (click)="deleteHandler(selectedItem.id)"> {{labelDelete}} </button>
+            <button (click)="deleteHandler(selectedItem.id!)"> {{labelDelete}} </button>
             <button (click)="onSaveHandler(selectedItem)"> {{labelSave}} </button>
         </div>
         

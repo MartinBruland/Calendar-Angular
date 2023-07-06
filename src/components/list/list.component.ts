@@ -1,5 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CalendarEvent } from '../../types/types'
+import { AuthSession } from '@supabase/supabase-js'
+import { SupabaseService } from '../../app/supabase.service'
+
+import { EventValidated } from 'src/types/types'
 
 @Component({
   selector: 'app-list',
@@ -7,14 +10,6 @@ import { CalendarEvent } from '../../types/types'
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnChanges, OnInit {
-
-  @Input() inputDate: Date | undefined;
-  @Input() inputTag: string | undefined;
-  @Output() outputEvents: EventEmitter<CalendarEvent[]> = new EventEmitter<CalendarEvent[]>();
-
-  outputEmitHandler = (events: CalendarEvent[]) => {
-    this.outputEvents.emit(events);
-  };
 
   labelTitle = "Events";
   labelUpdate = "Update Item";
@@ -27,30 +22,51 @@ export class ListComponent implements OnChanges, OnInit {
   labelStartDate = "Start Date: ";
   labelEndDate = "End Date: ";
 
-  events: CalendarEvent[] = [];
 
-  selectedItem: CalendarEvent | undefined = undefined;
+  @Input() session!: AuthSession;
+  @Input() inputDate: Date | undefined;
+  @Input() inputTag: string | undefined;
+  @Output() outputEvents: EventEmitter<EventValidated[]> = new EventEmitter<EventValidated[]>();
 
-  editMode = false;
 
-  ngOnInit(): void {
-    this.events = this.reloadCalendarEvents()
-    this.outputEmitHandler(this.events);
+  events: EventValidated[] = [];
+
+  selectedItem: EventValidated | undefined = undefined;
+
+  isEditViewVisible = false;
+
+
+
+  constructor(
+    private readonly supabase: SupabaseService, 
+  ) {};
+
+  async ngOnInit(): Promise<void> {
+    const data = await this.readEvents();
+    if (!data) return;
+    this.events = data;
+    this.outputEmitHandler(data);
   };
 
   ngOnChanges(changes: SimpleChanges): void {
     this.outputEmitHandler(this.events);
   };
 
-  setEditMode = () => {
-    this.editMode = !this.editMode;
+  outputEmitHandler = (events: EventValidated[]) => {
+    this.outputEvents.emit(events);
+  };
+
+
+
+  setEditView = () => {
+    this.isEditViewVisible = !this.isEditViewVisible;
   };
 
   onSelectHandler = (id: string) => {
     const found = this.events.find(item => item.id === id);
     if (found) {
       this.selectedItem = found;
-      this.editMode = true;
+      this.setEditView();
     };
   };
 
@@ -69,10 +85,10 @@ export class ListComponent implements OnChanges, OnInit {
         this.selectedItem.tag = value;
         return;
       case "startDate":
-        this.selectedItem.startDate = new Date(value);
+        this.selectedItem.date_start = new Date(value);
         return;
       case "endDate":
-        this.selectedItem.endDate = new Date(value);
+        this.selectedItem.date_end = new Date(value);
         return;
       case "status":
         this.selectedItem.status = value === "true" ? true : false;
@@ -80,50 +96,94 @@ export class ListComponent implements OnChanges, OnInit {
     };
   };
 
-  onCheckedHandler = (event: Event) => {
+  onCheckedHandler = async (event: Event) => {
+
     const key = (event.target as HTMLInputElement).id;
     const value = (event.target as HTMLInputElement).checked;
-    const index = this.events.findIndex((item => item.id === key));
-    const updatedEvents = [...this.events];
-    updatedEvents[index].status = value;
-    this.events = updatedEvents;
+
+    const item = this.events.find(item => String(item.id) === String(key));
+
+    if (item) {
+
+      const obj: EventValidated = {
+        ...item,
+        status: value,
+      }
+
+      await this.updateEvent(obj)
+      .then( async () => {
+        const data = await this.readEvents();
+        if (data) {
+          this.events = data;
+          this.outputEmitHandler(data);
+        };
+      });
+
+    };
+
   };
 
-  onSaveHandler = (obj: CalendarEvent) => {
-    const updatedEvents = [...this.events];
-    const index = updatedEvents.findIndex((item => item.id === obj.id));
-    updatedEvents[index] = obj;
-    this.events = updatedEvents;
-    this.outputEmitHandler(updatedEvents);
-    this.setEditMode();
+  onSaveHandler = async (obj: EventValidated) => {
+    await this.updateEvent(obj)
+    .then( async () => {
+      const data = await this.readEvents();
+      if (data) {
+        this.events = data;
+        this.outputEmitHandler(data);
+        this.setEditView();
+      };
+    });
   };
 
-  createHandler = (event: Event) => {
+  createHandler = async (event: Event) => {
+
     const val = (event.target as HTMLInputElement).value;
 
     const selectedDate = this.inputDate ? this.inputDate : new Date();
 
-    const obj: CalendarEvent = {
-      id: String(Math.floor(Math.random() * 999999)),
+    const obj: EventValidated = {
+      date_created: new Date(),
       title: val,
-      description: "",
       tag: "All",
-      startDate: selectedDate,
+      date_start: selectedDate,
       status: false,
-    }
-    const updatedEvents = [...this.events];
-    updatedEvents.push(obj);
-    this.events = updatedEvents;
-    this.outputEmitHandler(updatedEvents);
+    };
 
-    (event.target as HTMLInputElement).value = ""
+    await this.createEvent(obj)
+    .then( async () => {
+      const data = await this.readEvents();
+      if (data) {
+        this.events = data;
+        this.outputEmitHandler(data);
+        (event.target as HTMLInputElement).value = ""
+      };
+    });
+
   };
 
-  readItems = () => {
+  deleteHandler = async (id: string) => {
 
-    const originalEvents: CalendarEvent[] = this.events;
+    const obj = this.events.find(item => item.id === id);
 
-    let filteredEvents: CalendarEvent[] = [];
+    if (!obj) return;
+
+    await this.deleteEvent(obj)
+    .then( async () => {
+      const data = await this.readEvents();
+      if (data) {
+        this.events = data;
+        this.outputEmitHandler(data);
+        this.setEditView();
+      };
+    });
+
+  };
+
+
+  getFilteredItems = () => {
+
+    const originalEvents: EventValidated[] = this.events;
+    let filteredEvents: EventValidated[] = [];
 
     if (!this.inputTag || this.inputTag === "All") {
       filteredEvents = originalEvents;
@@ -148,59 +208,21 @@ export class ListComponent implements OnChanges, OnInit {
     return filteredEvents;
   };
 
-  deleteHandler = (id: string) => {
-    const updatedEvents = [...this.events].filter(item => item.id !== id);
-    this.events = updatedEvents;
-    this.outputEmitHandler(updatedEvents);
-    this.setEditMode();
-  };
-
-  filterItemsByTag = (val: string, data: CalendarEvent[]) => {
+  filterItemsByTag = (val: string, data: EventValidated[]) => {
     return [...data].filter(item => item.tag === val);
   };
 
-  filterItemsByDate = (val: Date, data: CalendarEvent[]) => {
+  filterItemsByDate = (val: Date, data: EventValidated[]) => {
     return [...data].filter(item => 
-      item.startDate?.getDate() === val.getDate() &&
-      item.startDate.getMonth() === val.getMonth() && 
-      item.startDate.getFullYear() === val.getFullYear()
+      item.date_start &&
+      item.date_start.getDate() === val.getDate() &&
+      item.date_start.getMonth() === val.getMonth() && 
+      item.date_start.getFullYear() === val.getFullYear()
     );
   };
 
-  filterItemsByStatus = (val: boolean, data: CalendarEvent[]) => {
+  filterItemsByStatus = (val: boolean, data: EventValidated[]) => {
     return [...data].filter(item => item.status === val);
-  };
-
-  reloadCalendarEvents = () => {
-    return [
-      {
-        id: "1",
-        title: "Event 1",
-        description: "Example event",
-        tag: "Todos",
-        startDate: new Date("6/1/23"),
-        endDate: new Date("6/7/23"),
-        status: false,
-      },
-      {
-        id: "2",
-        title: "Event 2",
-        description: "Example event",
-        tag: "Work",
-        startDate: new Date("6/1/23"),
-        endDate: new Date("6/7/23"),
-        status: false,
-      },
-      {
-        id: "3",
-        title: "Event 3",
-        description: "Example event",
-        tag: "Personal",
-        startDate: new Date("6/1/23"),
-        endDate: new Date("6/7/23"),
-        status: true,
-      }
-    ] as CalendarEvent[]
   };
 
   formatDate = (date: Date | undefined) => {
@@ -209,6 +231,126 @@ export class ListComponent implements OnChanges, OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  };
+
+
+
+
+
+
+  // CRUD CONTROLLERS:
+
+  createEvent = async (event: EventValidated) => {
+
+    const { user } = this.session
+
+    const convertedEvent = this.supabase.convertToEventRequest(event, user);
+    if (!convertedEvent) throw new Error('An error occurred during event convert');
+
+    try {
+      const { error } =  await this.supabase.createEvent(convertedEvent);
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return null;
+
+    } catch (error) {
+
+      console.error('Error creating event:', error);
+
+      throw new Error('An error occurred while creating the event.');
+
+    }
+
+  };
+
+  readEvents = async () => {
+
+    try {
+    
+      const { data, error } = await this.supabase.readEvents()
+    
+      if (data) {
+        const events: EventValidated[] = data.map(item => {
+          return this.supabase.validateEventResponse(item);
+        })
+        return events
+      }
+    
+      if (error) {
+        throw new Error(error.message);
+      }
+    
+      return null;
+    
+    } catch (error) {
+    
+      console.error('Error retrieving events:', error);
+    
+      throw new Error('An error occurred while retrieving the events.');
+    
+    }
+
+  };
+
+  updateEvent = async (event: EventValidated) => {
+
+    const { user } = this.session
+
+    const updatedEvent: EventValidated = {
+      ...event,
+      date_modified: new Date()
+    };
+
+    const convertedEvent = this.supabase.convertToEventRequest(updatedEvent, user);
+    if (!convertedEvent) throw new Error('An error occurred during event convert');
+
+    try {
+    
+      const { error } = await this.supabase.updateEvent(convertedEvent)
+        
+      if (error) {
+        throw new Error(error.message);
+      }
+    
+      return null;
+    
+    } catch (error) {
+    
+      console.error('Error updating event:', error);
+    
+      throw new Error('An error occurred while updating the event.');
+    
+    }
+  };
+
+  deleteEvent = async (event: EventValidated) => {
+
+    const { user } = this.session
+
+    const convertedEvent = this.supabase.convertToEventRequest(event, user);
+    if (!convertedEvent) throw new Error('An error occurred during event convert');
+  
+    try {
+  
+      const { error } = await this.supabase.deleteEvent(convertedEvent)
+    
+      if (error) {
+        throw new Error(error.message);
+      }
+  
+      return null;
+  
+    } catch (error) {
+  
+      console.error('Error deleting event:', error);
+  
+      throw new Error('An error occurred while deleting the event.');
+  
+    }
+  
   };
 
 }
