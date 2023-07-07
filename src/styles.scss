@@ -1,6 +1,7 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 	font-family:
 		system-ui,
 		-apple-system,
@@ -13,43 +14,19 @@
 		"Open Sans",
 		"Helvetica Neue",
 		sans-serif;
-	box-sizing: border-box;
+}
+
+:root {
+	--background-color: #111827; // Dark purple
+	--midground-color: #ffffff; // White
+	--foreground-color: #609966; // Fresh Green
+	--field-color: #eeeeee; //
+	--text-color-black: #000000; // Black
+	--text-color-white: #ffffff; // White
 }
 
 body {
 	background-color: var(--background-color);
-}
-
-:root {
-	--background-color: #cccccc;
-	--midground-color: #f5f6f8;
-	--foreground-color: #003049;
-	--text-color-black: #000000;
-	--text-color-white: #ffffff;
-}
-
-.darkmode {
-	--background-color: #001623;
-	--midground-color: #003049;
-	--foreground-color: #005684;
-	--text-color-black: #ffffff;
-	--text-color-white: #ffffff;
-}
-
-.legitmode {
-	--background-color: #cccccc;
-	--midground-color: #f5f6f8;
-	--foreground-color: #003049;
-	--text-color-black: #000000;
-	--text-color-white: #ffffff;
-}
-
-.cloudmode {
-	--background-color: rgb(100, 160, 197);
-	--midground-color: #f5f6f8;
-	--foreground-color: rgb(25, 45, 70);
-	--text-color-black: #000000;
-	--text-color-white: #ffffff;
 }
 
 h1 {
@@ -111,6 +88,7 @@ input {
 	outline: none;
 	cursor: text;
 }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

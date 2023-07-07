@@ -46,7 +46,7 @@ form {
 			width: 100px;
 			aspect-ratio: 1;
 			border-radius: 50%;
-			background-color: var(--background-color);
+			background-color: var(--field-color);
 			overflow: hidden;
 			box-shadow:
 				0 1px 3px rgba(0, 0, 0, 0.12),
@@ -89,8 +89,8 @@ form {
 			height: 35px;
 			padding: 0 1rem;
 			border-radius: 8px;
-			background-color: var(--background-color);
 			color: var(--text-color-black);
+			background-color: var(--field-color);
 		}
 	}
 }

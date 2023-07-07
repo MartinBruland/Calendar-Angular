@@ -11,8 +11,6 @@ import { Upload } from "src/components/settings-view/settings-view.component"
 })
 export class AppComponent implements OnInit {
 	labelTitle = "Calendar"
-	labelCopyright = "@ Martin Bruland, 2023"
-	labelDarkMode = "Dark"
 	labelSignOut = "Sign Out"
 	labelAccount = "Account"
 	labelHome = "Calendar"
@@ -27,15 +25,17 @@ export class AppComponent implements OnInit {
 
 	selectedDate: Date | undefined = undefined
 
-	selectedTag: string | undefined = undefined
+	selectedTag: string = "All"
 
 	selectedEvent: EventValidated | undefined = undefined
+
+	defaultTags = ["All", "Completed"]
+
+	availableTags = this.defaultTags
 
 	isSettingsViewVisible = false
 
 	isUpdateViewVisible = false
-
-	isDarkMode = false
 
 	message = ""
 
@@ -58,6 +58,21 @@ export class AppComponent implements OnInit {
 			: undefined
 	}
 
+	ngOnChanges(changes: SimpleChanges): void {
+		const updatedEvents: EventValidated[] = changes["events"].currentValue
+
+		const updatedTags = updatedEvents
+			.map(event => event.tag)
+			.filter(tag => tag !== undefined) as string[]
+
+		const allTags = [...new Set([...this.defaultTags, ...updatedTags])]
+
+		if (this.selectedTag && !allTags.includes(this.selectedTag))
+			this.setSelectedTag(this.defaultTags[0])
+
+		this.availableTags = allTags
+	}
+
 	setSelectedDate(date: Date) {
 		this.selectedDate = date
 	}
@@ -76,11 +91,6 @@ export class AppComponent implements OnInit {
 
 	setSettingsViewState() {
 		this.isSettingsViewVisible = !this.isSettingsViewVisible
-	}
-
-	setDarkModeState() {
-		this.isDarkMode = !this.isDarkMode
-		this.labelDarkMode = this.isDarkMode ? "Light" : "Dark"
 	}
 
 	async setCreatedEvent(event: EventValidated) {

@@ -119,7 +119,7 @@ export class ListComponent {
 			)
 		}
 
-		return filteredEvents
+		return filteredEvents.sort((a, b) => +a.date_created - +b.date_created)
 	}
 
 	filterItemsByTag(val: string, data: EventValidated[]) {

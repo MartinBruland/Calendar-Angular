@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from "@angular/forms"
 import { AppComponent } from "./app.component"
 import { CalendarComponent } from "../components/calendar/calendar.component"
 import { ListComponent } from "../components/list/list.component"
-import { ActionsComponent } from "../components/actions/actions.component"
 import { CalendarIconComponent } from "../components/calendar-icon/calendar-icon.component"
 
 import { SettingsViewComponent } from "../components/settings-view/settings-view.component"
@@ -17,7 +16,6 @@ import { UpdateViewComponent } from "../components/update-view/update-view.compo
 		AppComponent,
 		CalendarComponent,
 		ListComponent,
-		ActionsComponent,
 		LoginViewComponent,
 		SettingsViewComponent,
 		CalendarIconComponent,
