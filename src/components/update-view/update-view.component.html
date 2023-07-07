@@ -1,0 +1,39 @@
+<form
+	[formGroup]="updateEventForm"
+	(ngSubmit)="onSaveHandler()"
+	(document:keydown.enter)="onSaveHandler()"
+	(document:keydown.escape)="onCloseViewHandler()"
+>
+	<section class="header">
+		<h3>{{ labelUpdate }}</h3>
+		<button (click)="onCloseViewHandler()">X</button>
+	</section>
+
+	<section class="content">
+		<div>
+			<label for="title"> {{ labelName }} </label>
+			<input formControlName="title" id="title" />
+		</div>
+		<div>
+			<label for="description"> {{ labelDescription }} </label>
+			<input formControlName="description" id="description" />
+		</div>
+		<div>
+			<label for="category"> {{ labelTag }} </label>
+			<input formControlName="category" id="category" />
+		</div>
+		<div>
+			<label for="startDate"> {{ labelStartDate }} </label>
+			<input formControlName="startDate" id="startDate" type="date" />
+		</div>
+		<div>
+			<label for="endDate"> {{ labelEndDate }} </label>
+			<input formControlName="endDate" id="endDate" type="date" />
+		</div>
+	</section>
+
+	<section class="footer">
+		<button (click)="onDeleteHandler()">{{ labelDelete }}</button>
+		<button type="submit">{{ labelSave }}</button>
+	</section>
+</form>

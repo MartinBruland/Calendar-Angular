@@ -1,356 +1,150 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { AuthSession } from '@supabase/supabase-js'
-import { SupabaseService } from '../../app/supabase.service'
-
-import { EventValidated } from 'src/types/types'
+import { Component, Input, Output, EventEmitter } from "@angular/core"
+import { EventValidated } from "../../app/supabase.service"
+import { FormBuilder, FormControl } from "@angular/forms"
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+	selector: "app-list",
+	templateUrl: "./list.component.html",
+	styleUrls: ["./list.component.scss"]
 })
-export class ListComponent implements OnChanges, OnInit {
-
-  labelTitle = "Events";
-  labelUpdate = "Update Item";
-  labelSave = "Save";
-  labelDelete = "Delete";
-  labelAdd = "+";
-  labelName = "Title: ";
-  labelDescription = "Description: ";
-  labelTag = "Category: ";
-  labelStartDate = "Start Date: ";
-  labelEndDate = "End Date: ";
-
-
-  @Input() session!: AuthSession;
-  @Input() inputDate: Date | undefined;
-  @Input() inputTag: string | undefined;
-  @Output() outputEvents: EventEmitter<EventValidated[]> = new EventEmitter<EventValidated[]>();
-
-
-  events: EventValidated[] = [];
-
-  selectedItem: EventValidated | undefined = undefined;
-
-  isEditViewVisible = false;
-
-
-
-  constructor(
-    private readonly supabase: SupabaseService, 
-  ) {};
-
-  async ngOnInit(): Promise<void> {
-    const data = await this.readEvents();
-    if (!data) return;
-    this.events = data;
-    this.outputEmitHandler(data);
-  };
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.outputEmitHandler(this.events);
-  };
-
-  outputEmitHandler = (events: EventValidated[]) => {
-    this.outputEvents.emit(events);
-  };
-
-
-
-  setEditView = () => {
-    this.isEditViewVisible = !this.isEditViewVisible;
-  };
-
-  onSelectHandler = (id: string) => {
-    const found = this.events.find(item => item.id === id);
-    if (found) {
-      this.selectedItem = found;
-      this.setEditView();
-    };
-  };
-
-  onChangeHandler = (event: Event) => {
-    if (!this.selectedItem) return;
-    const key = (event.target as HTMLInputElement).id;
-    const value = (event.target as HTMLInputElement).value;
-    switch (key) {
-      case "title":
-        this.selectedItem.title = value;
-        return;
-      case "description":
-        this.selectedItem.description = value;
-        return;
-      case "tag":
-        this.selectedItem.tag = value;
-        return;
-      case "startDate":
-        this.selectedItem.date_start = new Date(value);
-        return;
-      case "endDate":
-        this.selectedItem.date_end = new Date(value);
-        return;
-      case "status":
-        this.selectedItem.status = value === "true" ? true : false;
-        return;
-    };
-  };
-
-  onCheckedHandler = async (event: Event) => {
-
-    const key = (event.target as HTMLInputElement).id;
-    const value = (event.target as HTMLInputElement).checked;
-
-    const item = this.events.find(item => String(item.id) === String(key));
-
-    if (item) {
-
-      const obj: EventValidated = {
-        ...item,
-        status: value,
-      }
-
-      await this.updateEvent(obj)
-      .then( async () => {
-        const data = await this.readEvents();
-        if (data) {
-          this.events = data;
-          this.outputEmitHandler(data);
-        };
-      });
-
-    };
-
-  };
-
-  onSaveHandler = async (obj: EventValidated) => {
-    await this.updateEvent(obj)
-    .then( async () => {
-      const data = await this.readEvents();
-      if (data) {
-        this.events = data;
-        this.outputEmitHandler(data);
-        this.setEditView();
-      };
-    });
-  };
-
-  createHandler = async (event: Event) => {
-
-    const val = (event.target as HTMLInputElement).value;
-
-    const selectedDate = this.inputDate ? this.inputDate : new Date();
+export class ListComponent {
+	labelTitle = "Events"
+	labelAdd = "+"
 
-    const obj: EventValidated = {
-      date_created: new Date(),
-      title: val,
-      tag: "All",
-      date_start: selectedDate,
-      status: false,
-    };
+	@Input() inputEvents!: EventValidated[]
 
-    await this.createEvent(obj)
-    .then( async () => {
-      const data = await this.readEvents();
-      if (data) {
-        this.events = data;
-        this.outputEmitHandler(data);
-        (event.target as HTMLInputElement).value = ""
-      };
-    });
+	@Input() inputSelectedDate: Date | undefined
 
-  };
+	@Input() inputSelectedTag: string | undefined
+
+	@Output() outputOpenUpdateView: EventEmitter<boolean> =
+		new EventEmitter<boolean>()
 
-  deleteHandler = async (id: string) => {
+	@Output() outputSelectEvent: EventEmitter<EventValidated> =
+		new EventEmitter<EventValidated>()
 
-    const obj = this.events.find(item => item.id === id);
-
-    if (!obj) return;
-
-    await this.deleteEvent(obj)
-    .then( async () => {
-      const data = await this.readEvents();
-      if (data) {
-        this.events = data;
-        this.outputEmitHandler(data);
-        this.setEditView();
-      };
-    });
-
-  };
-
-
-  getFilteredItems = () => {
-
-    const originalEvents: EventValidated[] = this.events;
-    let filteredEvents: EventValidated[] = [];
-
-    if (!this.inputTag || this.inputTag === "All") {
-      filteredEvents = originalEvents;
-    };
-    
-    if (this.inputTag === "Completed") {
-      filteredEvents = this.filterItemsByStatus(true, originalEvents);
-    };
-    
-    if (this.inputTag && this.inputTag !== "All" && this.inputTag !== "Completed") {
-      filteredEvents = this.filterItemsByTag(this.inputTag, originalEvents);
-    };
-
-    if (this.inputTag && this.inputDate) {
-      filteredEvents = this.filterItemsByDate(this.inputDate, filteredEvents);
-    };
-
-    if (!this.inputTag && this.inputDate) {
-      filteredEvents = this.filterItemsByDate(this.inputDate, originalEvents);
-    };
-
-    return filteredEvents;
-  };
-
-  filterItemsByTag = (val: string, data: EventValidated[]) => {
-    return [...data].filter(item => item.tag === val);
-  };
-
-  filterItemsByDate = (val: Date, data: EventValidated[]) => {
-    return [...data].filter(item => 
-      item.date_start &&
-      item.date_start.getDate() === val.getDate() &&
-      item.date_start.getMonth() === val.getMonth() && 
-      item.date_start.getFullYear() === val.getFullYear()
-    );
-  };
-
-  filterItemsByStatus = (val: boolean, data: EventValidated[]) => {
-    return [...data].filter(item => item.status === val);
-  };
-
-  formatDate = (date: Date | undefined) => {
-    if (!date) return;
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-
-
-
-
-
-  // CRUD CONTROLLERS:
-
-  createEvent = async (event: EventValidated) => {
-
-    const { user } = this.session
-
-    const convertedEvent = this.supabase.convertToEventRequest(event, user);
-    if (!convertedEvent) throw new Error('An error occurred during event convert');
-
-    try {
-      const { error } =  await this.supabase.createEvent(convertedEvent);
-      
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      return null;
-
-    } catch (error) {
-
-      console.error('Error creating event:', error);
-
-      throw new Error('An error occurred while creating the event.');
-
-    }
-
-  };
-
-  readEvents = async () => {
-
-    try {
-    
-      const { data, error } = await this.supabase.readEvents()
-    
-      if (data) {
-        const events: EventValidated[] = data.map(item => {
-          return this.supabase.validateEventResponse(item);
-        })
-        return events
-      }
-    
-      if (error) {
-        throw new Error(error.message);
-      }
-    
-      return null;
-    
-    } catch (error) {
-    
-      console.error('Error retrieving events:', error);
-    
-      throw new Error('An error occurred while retrieving the events.');
-    
-    }
-
-  };
-
-  updateEvent = async (event: EventValidated) => {
-
-    const { user } = this.session
-
-    const updatedEvent: EventValidated = {
-      ...event,
-      date_modified: new Date()
-    };
-
-    const convertedEvent = this.supabase.convertToEventRequest(updatedEvent, user);
-    if (!convertedEvent) throw new Error('An error occurred during event convert');
-
-    try {
-    
-      const { error } = await this.supabase.updateEvent(convertedEvent)
-        
-      if (error) {
-        throw new Error(error.message);
-      }
-    
-      return null;
-    
-    } catch (error) {
-    
-      console.error('Error updating event:', error);
-    
-      throw new Error('An error occurred while updating the event.');
-    
-    }
-  };
-
-  deleteEvent = async (event: EventValidated) => {
-
-    const { user } = this.session
-
-    const convertedEvent = this.supabase.convertToEventRequest(event, user);
-    if (!convertedEvent) throw new Error('An error occurred during event convert');
-  
-    try {
-  
-      const { error } = await this.supabase.deleteEvent(convertedEvent)
-    
-      if (error) {
-        throw new Error(error.message);
-      }
-  
-      return null;
-  
-    } catch (error) {
-  
-      console.error('Error deleting event:', error);
-  
-      throw new Error('An error occurred while deleting the event.');
-  
-    }
-  
-  };
-
+	@Output() outputUpdateEvent: EventEmitter<EventValidated> =
+		new EventEmitter<EventValidated>()
+
+	@Output() outputAddEvent: EventEmitter<EventValidated> =
+		new EventEmitter<EventValidated>()
+
+	addEventForm = new FormBuilder().group({
+		title: new FormControl<string | undefined>(undefined, {
+			nonNullable: true
+		})
+	})
+
+	onSelectHandler(id: string) {
+		const found = this.inputEvents.find(item => item.id === id)
+		if (found) {
+			this.outputSelectEvent.emit(found)
+			this.outputOpenUpdateView.emit(true)
+		}
+	}
+
+	onCheckedHandler(event: Event) {
+		const key = (event.target as HTMLInputElement).id
+		const value = (event.target as HTMLInputElement).checked
+
+		const item = this.inputEvents.find(item => String(item.id) === String(key))
+
+		if (item) {
+			const obj: EventValidated = {
+				...item,
+				status: value
+			}
+
+			this.outputUpdateEvent.emit(obj)
+		}
+	}
+
+	onCreateHandler() {
+		const title = this.addEventForm.value.title
+
+		if (!title) return
+
+		const selectedDate = this.inputSelectedDate
+			? this.inputSelectedDate
+			: new Date()
+
+		const defaultTag = "All"
+
+		const defaultStatus = false
+
+		const obj: EventValidated = {
+			date_created: new Date(),
+			title: title,
+			tag: defaultTag,
+			date_start: selectedDate,
+			status: defaultStatus
+		}
+
+		this.addEventForm.reset()
+
+		this.outputAddEvent.emit(obj)
+	}
+
+	getFilteredItems() {
+		const originalEvents: EventValidated[] = this.inputEvents
+		let filteredEvents: EventValidated[] = []
+
+		if (!this.inputSelectedTag || this.inputSelectedTag === "All") {
+			filteredEvents = originalEvents
+		}
+
+		if (this.inputSelectedTag === "Completed") {
+			filteredEvents = this.filterItemsByStatus(true, originalEvents)
+		}
+
+		if (
+			this.inputSelectedTag &&
+			this.inputSelectedTag !== "All" &&
+			this.inputSelectedTag !== "Completed"
+		) {
+			filteredEvents = this.filterItemsByTag(this.inputSelectedTag, originalEvents)
+		}
+
+		if (this.inputSelectedTag && this.inputSelectedDate) {
+			filteredEvents = this.filterItemsByDate(
+				this.inputSelectedDate,
+				filteredEvents
+			)
+		}
+
+		if (!this.inputSelectedTag && this.inputSelectedDate) {
+			filteredEvents = this.filterItemsByDate(
+				this.inputSelectedDate,
+				originalEvents
+			)
+		}
+
+		return filteredEvents
+	}
+
+	filterItemsByTag(val: string, data: EventValidated[]) {
+		return [...data].filter(item => item.tag === val)
+	}
+
+	filterItemsByDate(val: Date, data: EventValidated[]) {
+		return [...data].filter(
+			item =>
+				item.date_start &&
+				item.date_start.getDate() === val.getDate() &&
+				item.date_start.getMonth() === val.getMonth() &&
+				item.date_start.getFullYear() === val.getFullYear()
+		)
+	}
+
+	filterItemsByStatus(val: boolean, data: EventValidated[]) {
+		return [...data].filter(item => item.status === val)
+	}
+
+	formatDate(date: Date | undefined) {
+		if (!date) return
+		const year = date.getFullYear()
+		const month = String(date.getMonth() + 1).padStart(2, "0")
+		const day = String(date.getDate()).padStart(2, "0")
+		return `${year}-${month}-${day}`
+	}
 }

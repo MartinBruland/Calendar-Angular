@@ -1,0 +1,44 @@
+<form [formGroup]="updateProfileForm" (ngSubmit)="onSaveHandler()">
+	<section class="header">
+		<h1>{{ "Account" }}</h1>
+	</section>
+
+	<section class="content">
+		<div class="avatar">
+			<div>
+				<img *ngIf="inputAvatarURL" [src]="inputAvatarURL" />
+			</div>
+			<label for="file-upload">
+				<input
+					type="file"
+					accept="image/*"
+					id="file-upload"
+					(change)="onFileUpload($event)"
+					hidden
+				/>
+				U
+			</label>
+		</div>
+		<div>
+			<label for="email">Email</label>
+			<input id="email" type="text" [value]="'session.user.email'" disabled />
+		</div>
+		<div>
+			<label for="first_name">First Name</label>
+			<input formControlName="first_name" id="first_name" type="text" />
+		</div>
+		<div>
+			<label for="last_name">Last Name</label>
+			<input formControlName="last_name" id="last_name" type="url" />
+		</div>
+	</section>
+
+	<section class="footer">
+		<button>
+			{{ "Delete Account" }}
+		</button>
+		<button type="submit">
+			{{ "Save" }}
+		</button>
+	</section>
+</form>

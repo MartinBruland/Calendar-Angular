@@ -1,49 +1,48 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { EventValidated } from 'src/types/types'
+import {
+	Component,
+	Input,
+	Output,
+	EventEmitter,
+	OnChanges,
+	SimpleChanges
+} from "@angular/core"
+import { EventValidated } from "../../app/supabase.service"
 
 @Component({
-  selector: 'app-actions',
-  templateUrl: './actions.component.html',
-  styleUrls: ['./actions.component.scss']
+	selector: "app-actions",
+	templateUrl: "./actions.component.html",
+	styleUrls: ["./actions.component.scss"]
 })
 export class ActionsComponent implements OnChanges {
+	labelTitle = "Filters"
 
-  labelTitle = "Filters";
+	@Input() inputEvents: EventValidated[] | undefined
 
+	@Output() outputTag: EventEmitter<string> = new EventEmitter<string>()
 
+	defaultTags = ["All", "Completed"]
 
-  @Input() inputEvents: EventValidated[] | undefined;
+	availableTags = this.defaultTags
 
-  @Output() outputTag: EventEmitter<string> = new EventEmitter<string>();
+	selectedTag = this.defaultTags[0]
 
-  
-  defaultTags = ["All", "Completed"];
+	ngOnChanges(changes: SimpleChanges): void {
+		const updatedEvents: EventValidated[] = changes["inputEvents"].currentValue
 
-  availableTags = this.defaultTags;
+		const updatedTags = updatedEvents
+			.map(event => event.tag)
+			.filter(tag => tag !== undefined) as string[]
 
-  selectedTag = this.defaultTags[0];
+		const allTags = [...new Set([...this.defaultTags, ...updatedTags])]
 
+		if (!allTags.includes(this.selectedTag))
+			this.onSelectHandler(this.defaultTags[0])
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const propName in changes) {
-      if (propName === "inputEvents") {
-        const chng = changes[propName];
-        const updatedEvents: EventValidated[] = chng.currentValue;       
-        const tags = [...this.defaultTags, ...updatedEvents.map(event => event.tag)]
-        .filter(tag => tag !== undefined) // Filter out null values
-        .map(tag => tag as string); // Type assertion to convert remaining values to strings      
-        this.availableTags = [...new Set(tags)];
-      };
-    }
-  };
+		this.availableTags = allTags
+	}
 
-  outputEmitHandler(val: string) {
-    this.outputTag.emit(val);
-  };
-
-  onSelectHandler = (val: string) => {
-    this.selectedTag = val;
-    this.outputEmitHandler(val);
-  };
-
+	onSelectHandler(val: string) {
+		this.selectedTag = val
+		this.outputTag.emit(val)
+	}
 }

@@ -1,44 +1,71 @@
-<div class="app" [ngClass]="{'darkmode': isDarkMode}">
-  <header>
-    <h1> {{labelTitle}} </h1>
+<div class="app" [ngClass]="{ darkmode: isDarkMode }">
+	<header>
+		<h1>{{ labelTitle }}</h1>
 
-    <div class="dropdown" *ngIf="session">
-      <button>
-        <img *ngIf="profile && profile.avatar_url" [src]="profile.avatar_url" />
-        {{profile ? profile.first_name + " " + profile.last_name : "Username"}}
-      </button>
-      <div class="dropdown-content">
-        <button (click)="setSettingsView()"> Account </button>
-        <button (click)="signOut()">Sign Out</button>
-        <button (click)="setDarkMode()"> {{labelDarkMode}} </button>
-      </div>
-    </div>
+		<div class="dropdown" *ngIf="session">
+			<button>
+				<div>
+					<img *ngIf="avatarURL" [src]="avatarURL" />
+				</div>
+				{{ profile ? profile.first_name + " " + profile.last_name : "Username" }}
+			</button>
+			<div class="dropdown-content">
+				<button (click)="setSettingsViewState()">
+					{{ isSettingsViewVisible ? labelHome : labelAccount }}
+				</button>
+				<button (click)="signOut()">{{ labelSignOut }}</button>
+				<button (click)="setDarkModeState()">{{ labelDarkMode }}</button>
+			</div>
+		</div>
+	</header>
 
-  </header>
+	<main>
+		<div
+			class="mainView"
+			*ngIf="session && !isSettingsViewVisible && !isUpdateViewVisible"
+		>
+			<div class="placeholder-1">
+				<app-calendar
+					[inputEvents]="events"
+					(outputDate)="setSelectedDate($event)"
+				/>
+			</div>
+			<div class="placeholder-2">
+				<app-actions [inputEvents]="events" (outputTag)="setSelectedTag($event)" />
+				<app-list
+					[inputEvents]="events"
+					[inputSelectedDate]="selectedDate"
+					[inputSelectedTag]="selectedTag"
+					(outputOpenUpdateView)="setUpdateViewState($event)"
+					(outputSelectEvent)="setSelectedEvent($event)"
+					(outputAddEvent)="setCreatedEvent($event)"
+					(outputUpdateEvent)="setUpdatedEvent($event)"
+				/>
+			</div>
+		</div>
 
-  <main>
+		<login-view
+			*ngIf="!session"
+			[message]="message"
+			(outputSubmit)="setLoginDetails($event)"
+		/>
 
-    <app-login class="loginView"  *ngIf="!session" />
+		<update-view
+			*ngIf="selectedEvent && isUpdateViewVisible"
+			[inputEvent]="selectedEvent"
+			(outputSave)="setUpdatedEvent($event)"
+			(outputDelete)="setDeletedEvent($event)"
+			(outputClose)="setUpdateViewState($event)"
+		/>
 
-    <div class="mainView" *ngIf="session && !isSettingsViewVisible">
+		<settings-view
+			*ngIf="session && isSettingsViewVisible"
+			[inputProfile]="profile"
+			[inputAvatarURL]="avatarURL"
+			(outputSave)="setUpdatedProfile($event)"
+			(outputUpload)="setUploadedFile($event)"
+		/>
+	</main>
 
-        <div class="placeholder-1" >
-          <app-calendar [inputEvents]="events" (outputDate)="receiveSelectedDate($event)" />
-        </div>
-        <div class="placeholder-2" >
-          <app-list [session]="session" [inputDate]="selectedDate" [inputTag]="selectedTag" (outputEvents)="receiveCalendarEvents($event)" />
-        </div>      
-        <div class="placeholder-3" >
-          <app-actions [inputEvents]="events" (outputTag)="receiveSelectedTag($event)" />
-        </div>
-
-    </div>
-
-    <app-settings class="settingsView" *ngIf="session && isSettingsViewVisible" [session]="session" />
-
-  </main>
-
-
-  <footer>
-  </footer>
+	<footer></footer>
 </div>

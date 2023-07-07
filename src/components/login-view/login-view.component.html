@@ -1,0 +1,23 @@
+<form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+	<section class="header">
+		<app-calendar-icon />
+		<h1>Sign in with email</h1>
+	</section>
+
+	<section class="content">
+		<input
+			id="email"
+			formControlName="email"
+			class="inputField"
+			type="email"
+			placeholder="Email"
+		/>
+		<button type="submit">
+			{{ ">" }}
+		</button>
+	</section>
+
+	<section class="footer">
+		<p *ngIf="">{{ message }}</p>
+	</section>
+</form>

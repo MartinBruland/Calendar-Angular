@@ -1,24 +1,30 @@
-<div class="header">
-    <button (click)="onPreviousMonthHandler()"> {{previousMonthLabel}} </button>
-    <h2> {{currentMonthLabel + " " + currentYear}} </h2>
-    <button (click)="onNextMonthHandler()"> {{nextMonthLabel}} </button>
-</div>
+<div class="view">
+	<section class="header">
+		<button (click)="onPreviousMonthHandler()">{{ previousMonthLabel }}</button>
+		<h2>{{ calendarLabel }}</h2>
+		<button (click)="onNextMonthHandler()">{{ nextMonthLabel }}</button>
+	</section>
 
-<div class="content">
+	<section class="content">
+		<div class="weekday-container" *ngFor="let day of weekdayLabels">
+			<h4>{{ day.substring(0, 3) }}</h4>
+		</div>
 
-    <div class="weekday-container" *ngFor="let day of weekdayLabels">
-        <h4> {{day.substring(0, 3)}} </h4>
-    </div>
-    
-    <div class="date-container" *ngFor="let date of visibleDates">
-        <div></div>
-        <button class="date" [ngClass]="{
-            'date-selected': isDateCurrent(date) || isDateSelected(date),
-            'date-hidden': isDateHidden(date),
-        }" (click)="onSelectDateHandler(date)"> {{ date }} </button>
-        <div> 
-            <p *ngIf="dateHasContent(date)"> . . . </p>
-        </div>
-        
-    </div>
+		<div class="date-container" *ngFor="let date of visibleDates">
+			<div></div>
+			<button
+				class="date"
+				[ngClass]="{
+					'date-selected': isDateCurrent(date) || isDateSelected(date),
+					'date-hidden': isDateHidden(date)
+				}"
+				(click)="onSelectDateHandler(date)"
+			>
+				{{ date }}
+			</button>
+			<div>
+				<p *ngIf="dateHasContent(date)">. . .</p>
+			</div>
+		</div>
+	</section>
 </div>

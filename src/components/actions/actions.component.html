@@ -1,8 +1,16 @@
-<div class="header">
-    <h2> {{labelTitle}} </h2>
-</div>
+<div class="view">
+	<section class="header">
+		<h2>{{ labelTitle }}</h2>
+	</section>
 
-<div class="content">
-    <button class="button" [ngClass]="{'button-selected': tag === selectedTag}" (click)="onSelectHandler(tag)"
-        *ngFor="let tag of availableTags"> {{tag}} </button>
+	<section class="content">
+		<button
+			class="button"
+			[ngClass]="{ 'button-selected': tag === selectedTag }"
+			(click)="onSelectHandler(tag)"
+			*ngFor="let tag of availableTags"
+		>
+			{{ tag }}
+		</button>
+	</section>
 </div>

@@ -1,54 +1,30 @@
+<div class="view">
+	<section class="header">
+		<h2>{{ labelTitle }}</h2>
+	</section>
 
-<div class="header">
-    <h2> {{labelTitle}} </h2>
-</div>
+	<ol class="content">
+		<li *ngFor="let item of getFilteredItems()">
+			<input
+				type="checkbox"
+				[checked]="item.status"
+				id="{{ item.id }}"
+				(click)="onCheckedHandler($event)"
+			/>
+			<label for="{{ item.id }}" (click)="onSelectHandler(item.id!)">
+				{{ item.title }}
+			</label>
+		</li>
+	</ol>
 
-<ol>
-    <li *ngFor="let item of getFilteredItems()">
-        <input class="input-checkbox" type="checkbox" [checked]="item.status" id={{item.id}} (click)="onCheckedHandler($event)" />
-        <label class="label-listItem" (click)="onSelectHandler(item.id!)"> {{item.title}} </label>
-    </li>
-    <li class="add">
-        <label class="label-add" for="add"> + </label>
-        <input class="input-text" type="text" id="add" placeholder="Add Item" (keydown.enter)="createHandler($event)" />
-    </li>
-</ol>
-
-<div class="backdrop" *ngIf="isEditViewVisible && selectedItem" (document:keydown.enter)="onSaveHandler(selectedItem)" (document:keydown.escape)="setEditView()">
-    <div class="modal">
-
-        <div class="modal-header">
-            <h3> {{labelUpdate}} </h3>
-            <button (click)="setEditView()">X</button>
-        </div>
-
-        <div class="modal-main">
-            <div>
-                <label for="title"> {{labelName}} </label>
-                <input id="title" value={{selectedItem.title}} (keyup)="onChangeHandler($event)" />
-            </div>
-            <div>
-                <label for="description"> {{labelDescription}} </label>
-                <input id="description" value={{selectedItem.description}} (keyup)="onChangeHandler($event)"/>
-            </div>
-            <div>
-                <label for="tag"> {{labelTag}} </label>
-                <input id="tag" value={{selectedItem.tag}} (keyup)="onChangeHandler($event)"/>
-            </div>
-            <div>
-                <label for="startDate"> {{labelStartDate}} </label>
-                <input id="startDate" value={{formatDate(selectedItem.date_start)}} (change)="onChangeHandler($event)" type="date"/>
-            </div>
-            <div>
-                <label for="endDate"> {{labelEndDate}} </label>
-                <input id="endDate" value={{formatDate(selectedItem.date_end)}} (change)="onChangeHandler($event)" type="date"/>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button (click)="deleteHandler(selectedItem.id!)"> {{labelDelete}} </button>
-            <button (click)="onSaveHandler(selectedItem)"> {{labelSave}} </button>
-        </div>
-        
-    </div>
+	<form class="footer" [formGroup]="addEventForm">
+		<label for="add"> + </label>
+		<input
+			id="add"
+			type="text"
+			formControlName="title"
+			placeholder="Add Item"
+			(keydown.enter)="onCreateHandler()"
+		/>
+	</form>
 </div>
