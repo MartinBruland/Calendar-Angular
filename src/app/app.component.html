@@ -35,8 +35,8 @@
 					[inputSelectedTag]="selectedTag"
 					(outputOpenUpdateView)="setUpdateViewState($event)"
 					(outputSelectEvent)="setSelectedEvent($event)"
-					(outputAddEvent)="setCreatedEvent($event)"
-					(outputUpdateEvent)="setUpdatedEvent($event)"
+					(outputAddEvent)="createEvent($event)"
+					(outputUpdateEvent)="updateEvent($event)"
 				/>
 			</div>
 
@@ -51,30 +51,34 @@
 						{{ tag }}
 					</button>
 				</div>
-				<button>Lister</button>
+				<button>Filter</button>
 			</div>
 		</div>
 
-		<login-view
-			*ngIf="!session"
-			[message]="message"
-			(outputSubmit)="setLoginDetails($event)"
-		/>
+		<login-view *ngIf="!session" (outputSubmit)="signIn($event)" />
 
 		<update-view
 			*ngIf="selectedEvent && isUpdateViewVisible"
 			[inputEvent]="selectedEvent"
-			(outputSave)="setUpdatedEvent($event)"
-			(outputDelete)="setDeletedEvent($event)"
+			(outputSave)="updateEvent($event)"
+			(outputDelete)="deleteEvent($event)"
 			(outputClose)="setUpdateViewState($event)"
 		/>
 
 		<settings-view
 			*ngIf="session && isSettingsViewVisible"
+			[inputUser]="session.user"
 			[inputProfile]="profile"
 			[inputAvatarURL]="avatarURL"
-			(outputSave)="setUpdatedProfile($event)"
-			(outputUpload)="setUploadedFile($event)"
+			[isLoading]="isLoading"
+			(outputSave)="updateProfile($event)"
+			(outputUpload)="uploadAvatar($event)"
+		/>
+
+		<app-notification
+			*ngIf="message"
+			[message]="message"
+			(onClose)="closeNotificationhandler($event)"
 		/>
 	</main>
 

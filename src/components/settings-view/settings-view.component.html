@@ -6,7 +6,8 @@
 	<section class="content">
 		<div class="avatar">
 			<div>
-				<img *ngIf="inputAvatarURL" [src]="inputAvatarURL" />
+				<img *ngIf="inputAvatarURL && !isLoading" [src]="inputAvatarURL" />
+				<app-loading-indicator *ngIf="isLoading" />
 			</div>
 			<label for="file-upload">
 				<input
@@ -21,7 +22,7 @@
 		</div>
 		<div>
 			<label for="email">Email</label>
-			<input id="email" type="text" [value]="'session.user.email'" disabled />
+			<input formControlName="email" id="email" type="text" />
 		</div>
 		<div>
 			<label for="first_name">First Name</label>
@@ -34,9 +35,6 @@
 	</section>
 
 	<section class="footer">
-		<button>
-			{{ "Delete Account" }}
-		</button>
 		<button type="submit">
 			{{ "Save" }}
 		</button>

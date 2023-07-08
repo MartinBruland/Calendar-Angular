@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core"
 import { FormBuilder } from "@angular/forms"
 import { Profile } from "../../app/supabase.service"
 import { SafeResourceUrl } from "@angular/platform-browser"
+import { User } from "@supabase/supabase-js"
 
 export interface Upload {
 	file: File
@@ -14,13 +15,16 @@ export interface Upload {
 	styleUrls: ["./settings-view.component.scss"]
 })
 export class SettingsViewComponent implements OnInit {
+	@Input() inputUser!: User
 	@Input() inputProfile: Profile | undefined
 	@Input() inputAvatarURL: SafeResourceUrl | undefined
+	@Input() isLoading!: boolean
 
 	@Output() outputSave: EventEmitter<Profile> = new EventEmitter<Profile>()
 	@Output() outputUpload: EventEmitter<Upload> = new EventEmitter<Upload>()
 
 	updateProfileForm = new FormBuilder().group({
+		email: { value: "null", disabled: true },
 		first_name: "",
 		last_name: ""
 	})
@@ -32,7 +36,10 @@ export class SettingsViewComponent implements OnInit {
 
 		const { first_name, last_name } = this.inputProfile
 
+		const { email } = this.inputUser
+
 		this.updateProfileForm.patchValue({
+			email,
 			first_name,
 			last_name
 		})

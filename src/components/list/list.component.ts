@@ -119,7 +119,7 @@ export class ListComponent {
 			)
 		}
 
-		return filteredEvents.sort((a, b) => +a.date_created - +b.date_created)
+		return this.sortByNumber(filteredEvents)
 	}
 
 	filterItemsByTag(val: string, data: EventValidated[]) {
@@ -140,11 +140,32 @@ export class ListComponent {
 		return [...data].filter(item => item.status === val)
 	}
 
-	formatDate(date: Date | undefined) {
-		if (!date) return
-		const year = date.getFullYear()
-		const month = String(date.getMonth() + 1).padStart(2, "0")
-		const day = String(date.getDate()).padStart(2, "0")
-		return `${year}-${month}-${day}`
+	sortByDate(events: EventValidated[]) {
+		return events.sort(function (a, b) {
+			// Compare the dates
+			var dateComparison = a.date_created
+				.toISOString()
+				.substring(0, 10)
+				.localeCompare(b.date_created.toISOString().substring(0, 10))
+
+			// If the dates are equal, compare the times
+			if (dateComparison === 0) {
+				return a.date_created.getTime() - b.date_created.getTime()
+			}
+
+			return dateComparison
+		})
+	}
+
+	sortByNumber(events: EventValidated[]) {
+		return events.sort(function (a, b) {
+			return Number(a.id) - Number(b.id)
+		})
+	}
+
+	sortByTitle(events: EventValidated[]) {
+		return events.sort(function (a, b) {
+			return a.title.localeCompare(b.title)
+		})
 	}
 }

@@ -1,9 +1,4 @@
-<form
-	[formGroup]="updateEventForm"
-	(ngSubmit)="onSaveHandler()"
-	(document:keydown.enter)="onSaveHandler()"
-	(document:keydown.escape)="onCloseViewHandler()"
->
+<form [formGroup]="updateEventForm" (ngSubmit)="onSaveHandler()">
 	<section class="header">
 		<h3>{{ labelUpdate }}</h3>
 		<button (click)="onCloseViewHandler()">X</button>

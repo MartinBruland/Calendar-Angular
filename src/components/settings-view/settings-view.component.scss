@@ -43,6 +43,10 @@ form {
 		margin-bottom: 1rem;
 
 		& div {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
 			width: 100px;
 			aspect-ratio: 1;
 			border-radius: 50%;

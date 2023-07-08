@@ -94,6 +94,10 @@ export class SupabaseService {
 		return this.supabase.auth.signOut()
 	}
 
+	updateEmail(email: string) {
+		return this.supabase.auth.updateUser({ email })
+	}
+
 	// PROFILE
 
 	readProfile(user: User) {
@@ -105,7 +109,7 @@ export class SupabaseService {
 	}
 
 	updateProfile(profile: Profile) {
-		return this.supabase.from("profile").upsert(profile).select()
+		return this.supabase.from("profile").upsert(profile).select().single()
 	}
 
 	// AVATAR IMAGE ASSET
@@ -129,15 +133,15 @@ export class SupabaseService {
 	}
 
 	createEvent(event: EventRequest) {
-		return this.supabase.from("event").insert(event)
+		return this.supabase.from("event").insert(event).select()
 	}
 
 	updateEvent(event: EventRequest) {
-		return this.supabase.from("event").upsert(event)
+		return this.supabase.from("event").upsert(event).select()
 	}
 
 	deleteEvent(id: string) {
-		return this.supabase.from("event").delete().eq("id", id)
+		return this.supabase.from("event").delete().eq("id", id).select()
 	}
 
 	// UTILITIES

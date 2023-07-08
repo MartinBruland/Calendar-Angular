@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core"
-import { FormBuilder, FormControl } from "@angular/forms"
+import { FormBuilder, FormControl, Validators } from "@angular/forms"
 import { EventValidated } from "src/app/supabase.service"
+import { formatDate } from "@angular/common"
 
 @Component({
 	selector: "update-view",
@@ -34,10 +35,10 @@ export class UpdateViewComponent implements OnInit {
 		category: new FormControl<string | undefined>(undefined, {
 			nonNullable: true
 		}),
-		startDate: new FormControl<Date | undefined>(undefined, {
+		startDate: new FormControl<string | undefined>(undefined, {
 			nonNullable: true
 		}),
-		endDate: new FormControl<Date | undefined>(undefined, {
+		endDate: new FormControl<string | undefined>(undefined, {
 			nonNullable: true
 		})
 	})
@@ -47,8 +48,12 @@ export class UpdateViewComponent implements OnInit {
 			title: this.inputEvent.title,
 			description: this.inputEvent.description,
 			category: this.inputEvent.tag,
-			startDate: this.inputEvent.date_start,
+			startDate: this.inputEvent.date_start
+				? formatDate(this.inputEvent.date_start, "yyyy-MM-dd", "en")
+				: undefined,
 			endDate: this.inputEvent.date_end
+				? formatDate(this.inputEvent.date_end, "yyyy-MM-dd", "en")
+				: undefined
 		})
 	}
 
@@ -62,8 +67,12 @@ export class UpdateViewComponent implements OnInit {
 			title: this.updateEventForm.value.title,
 			description: this.updateEventForm.value.description,
 			tag: this.updateEventForm.value.category,
-			date_start: this.updateEventForm.value.startDate,
+			date_start: this.updateEventForm.value.startDate
+				? new Date(this.updateEventForm.value.startDate)
+				: undefined,
 			date_end: this.updateEventForm.value.endDate
+				? new Date(this.updateEventForm.value.endDate)
+				: undefined
 		}
 
 		this.updateEventForm.reset()
