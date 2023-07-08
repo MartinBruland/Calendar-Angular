@@ -76,15 +76,17 @@ export class UpdateViewComponent implements OnInit {
 		}
 
 		this.updateEventForm.reset()
-
 		this.outputSave.emit(updatedObj)
+		
 	}
 
 	onDeleteHandler() {
+		this.updateEventForm.reset()
 		this.outputDelete.emit(this.inputEvent)
 	}
 
 	onCloseViewHandler() {
+		this.updateEventForm.reset()
 		this.outputClose.emit(true)
 	}
 }

@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { SupabaseService, EventValidated, Profile } from "./supabase.service"
 import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser"
 
